@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dind
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: dind
+  template:
+    metadata:
+      labels:
+        k8s-app: dind
+    spec:
+      containers:
+      - name: dind
+        image: docker:dind
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: docker-file-storage
+            mountPath: /var/lib/docker
+          - name: docker-socket
+            mountPath: /var/run
+      - name: sh
+        image: alpine
+        command:
+          - sh
+          - -c
+          - while true; do echo; sleep 1; done
+        volumeMounts:
+        - name: docker-socket
+          mountPath: /var/run
+
+      volumes:
+        - name: docker-file-storage
+          emptyDir: {}
+        - name: docker-socket
+          emptyDir: {}
