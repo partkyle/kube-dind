@@ -13,25 +13,36 @@ spec:
         k8s-app: dind
     spec:
       containers:
+      # this container runs docker and waits for docker commands over a unix socket
+      # at /var/run/docker.sock
       - name: dind
         image: docker:dind
         securityContext:
+          # we need priviliged for dind
           privileged: true
         volumeMounts:
+          # docker creates a massive amount of files for images and containers
+          # these will probably be handled by the VOLUME directive on the image
+          # Dockerfile of docker:dind, but this is put here to call out that
+          # it is happening
           - name: docker-file-storage
             mountPath: /var/lib/docker
+          # this is not the socket on the host, but the one inside the container
+          # this is used as a mount path so it can be shared to the other container in this pod
           - name: docker-socket
             mountPath: /var/run
+      # this container is a dummy container used for examples
+      # it just runs a shell loop that waits so we can exec into it and run docker commands
+      # it also mounts the docker socket so we can run those docker commands
       - name: sh
         image: alpine
         command:
           - sh
           - -c
-          - while true; do echo; sleep 1; done
+          - apk --no-cache add docker && while true; do echo; sleep 1; done
         volumeMounts:
         - name: docker-socket
           mountPath: /var/run
-
       volumes:
         - name: docker-file-storage
           emptyDir: {}

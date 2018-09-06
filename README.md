@@ -39,22 +39,7 @@ replicaset.apps/dind-7679579dd5   1         1         1         5m
 Now you can exec into the idle container running alipine linux and execute docker commands.
 
 ```
-/ # apk add --update docker
-fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
-fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
-(1/9) Installing ca-certificates (20171114-r3)
-(2/9) Installing libmnl (1.0.4-r0)
-(3/9) Installing jansson (2.11-r0)
-(4/9) Installing libnftnl-libs (1.1.1-r0)
-(5/9) Installing iptables (1.6.2-r0)
-(6/9) Installing device-mapper-libs (2.02.178-r0)
-(7/9) Installing libltdl (2.4.6-r5)
-(8/9) Installing libseccomp (2.3.3-r1)
-(9/9) Installing docker (18.06.1-r0)
-Executing docker-18.06.1-r0.pre-install
-Executing busybox-1.28.4-r0.trigger
-Executing ca-certificates-20171114-r3.trigger
-OK: 182 MiB in 22 packages
+~/s/kube-dind > kubectl exec -it dind-7679579dd5-8gkmj -c sh sh
 / # docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
